@@ -17,6 +17,7 @@ public class ConnectionManager {
     private static final String USERNAME_KEY = "db.username";
     private static final String URL_KEY = "db.url";
     private static final String POOL_SIZE_KEY = "db.pool.size";
+    private static final String DRIVER_CLASS_NAME = "db.driverClassName";
     public static final Integer DEFAULT_POOL_SIZE = 10;
     private static BlockingQueue<Connection> pool;
     private static List<Connection> sourceConnections;
@@ -70,7 +71,8 @@ public class ConnectionManager {
 
     @SneakyThrows
     private static void loadDriver() {
-        Class.forName("java.sql.Driver");
+        Class.forName(PropertiesUtil.get(DRIVER_CLASS_NAME));
+        //  Class.forName("java.sql.Driver");
 
     }
 

@@ -1,11 +1,12 @@
 package com.tamazian.dao;
 
-import com.tamazian.entity.Role;
+import com.tamazian.entity.Position;
 import com.tamazian.entity.User;
 import com.tamazian.util.ConnectionManager;
+import lombok.SneakyThrows;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +17,11 @@ public class UserDao implements CommonDao<Long, User> {
 
     public static final String FIND_ALL_SQL = """
             SELECT *
-            FROM user
+            FROM users
+            """;
+    public static final String SAVE_SQL = """
+            INSERT INTO users (email, password, firstName, lastName, position, birthday) 
+            VALUES (?, ?, ?, ?, ?, ?);
             """;
 
     private UserDao() {
@@ -61,8 +66,24 @@ public class UserDao implements CommonDao<Long, User> {
     }
 
     @Override
+    @SneakyThrows
     public User save(User entity) {
-        return null;
+        try (Connection connection = ConnectionManager.get();
+             PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setObject(1, entity.getEmail());
+            preparedStatement.setObject(2, entity.getPassword());
+            preparedStatement.setObject(3, entity.getFirstName());
+            preparedStatement.setObject(4, entity.getLastName());
+            preparedStatement.setObject(5, entity.getPosition().name());
+            preparedStatement.setObject(6, entity.getBirthday());
+
+            preparedStatement.executeUpdate();
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            generatedKeys.next();
+            entity.setId(generatedKeys.getObject("id", Long.class));
+
+            return entity;
+        }
     }
 
     private User buildUser(ResultSet resultSet) throws SQLException {
@@ -72,7 +93,8 @@ public class UserDao implements CommonDao<Long, User> {
                 resultSet.getObject("password", String.class),
                 resultSet.getObject("firstName", String.class),
                 resultSet.getObject("lastName", String.class),
-                Role.valueOf(resultSet.getObject("role", String.class))
+                Position.valueOf(resultSet.getObject("role", String.class)),
+                resultSet.getObject("birthday", LocalDate.class)
         );
     }
 

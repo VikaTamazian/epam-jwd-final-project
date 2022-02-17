@@ -12,29 +12,28 @@
     <title>Registration</title>
 </head>
 <body>
-<form action="/registration" method="post">
+<form action="${pageContext.request.contextPath}/registration" method="post">
     <label for="email">Email:
         <input type="text" name="email" id="email">
     </label><br>
     <label for="password">Password:
         <input type="password" name="password" id="password">
     </label><br>
-    <label for="firstname">First name:
-        <input type="text" name="firstname" id="firstname">
+    <label for="firstName">First name:
+        <input type="text" name="firstName" id="firstName">
     </label><br>
-    <label for="lastname">Last name:
-        <input type="text" name="lastname" id="lastname">
+    <label for="lastName">Last name:
+        <input type="text" name="lastName" id="lastName">
     </label><br>
-    <label for="role"></label>Role:
-    <select name="role" id="role">
-        <c:forEach var="role" items="${requestScope.roles}">
-            <option value="${role}">${role}</option>
+    <label for="position"></label>Position:
+    <select name="position" id="position">
+        <c:forEach var="position" items="${requestScope.position}">
+            <option value="${position}">${position}</option>
         </c:forEach>
     </select><br>
-    <c:forEach var="gender" items="${requestScope.genders}">
-        <input type="radio" name="gender" value="${gender}">${gender}
-        <br>
-    </c:forEach>
+    <label for="birthday">Birthday:
+        <input type="date" name="birthday" id="birthday">
+    </label><br>
     <br>
     <button type="submit">Send</button>
 </form>
