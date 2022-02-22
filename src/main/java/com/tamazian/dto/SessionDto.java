@@ -1,4 +1,4 @@
-package com.tamazian.service;
+package com.tamazian.dto;
 
 import lombok.Builder;
 import lombok.Value;

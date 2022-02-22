@@ -13,10 +13,11 @@
     <title>Users</title>
 </head>
 <body>
+<%@ include file="header.jsp"%>
 <h1>Selected user</h1>
 <ul>
     <c:forEach var="user" items="${requestScope.users}">
-        <li>${fn:toLowerCase(user.description)}</li>
+        <li>${fn:toLowerCase(user.email)}</li>
     </c:forEach>
 </ul>
 

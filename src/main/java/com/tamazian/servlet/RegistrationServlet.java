@@ -1,10 +1,12 @@
 package com.tamazian.servlet;
 
 import com.tamazian.dto.CreateUserDto;
-import com.tamazian.entity.Position;
+import com.tamazian.entity.Title;
+import com.tamazian.exception.ValidationException;
 import com.tamazian.service.UserService;
 import com.tamazian.util.JspHelper;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +14,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 
+@MultipartConfig(fileSizeThreshold = 1024 * 1024)
 @WebServlet("/registration")
 public class RegistrationServlet extends HttpServlet {
 
@@ -19,7 +22,7 @@ public class RegistrationServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.setAttribute("position", Position.values());
+        req.setAttribute("title", Title.values());
         req.getRequestDispatcher(JspHelper.getPath("registration")).forward(req, resp);
     }
 
@@ -30,10 +33,17 @@ public class RegistrationServlet extends HttpServlet {
                 .password(req.getParameter("password"))
                 .firstName(req.getParameter("firstName"))
                 .lastName(req.getParameter("lastName"))
-                .position(req.getParameter("position"))
+                .image(req.getPart("image"))
+                .title(req.getParameter("title"))
                 .birthday(req.getParameter("birthday"))
                 .build();
-        userService.create(userDto);
-        resp.sendRedirect("/login");
+
+        try {
+            userService.create(userDto);
+            resp.sendRedirect("/login");
+        }catch (ValidationException e){
+            req.setAttribute("errors", e.getErrors());
+            doGet(req, resp);
+        }
     }
 }

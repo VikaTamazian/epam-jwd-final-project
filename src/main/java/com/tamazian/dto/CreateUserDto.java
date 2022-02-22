@@ -1,5 +1,6 @@
 package com.tamazian.dto;
 
+import jakarta.servlet.http.Part;
 import lombok.Builder;
 import lombok.Value;
 
@@ -10,6 +11,7 @@ public class CreateUserDto {
     String password;
     String firstName;
     String lastName;
-    String position;
+    Part image;
+    String title;
     String birthday;
 }

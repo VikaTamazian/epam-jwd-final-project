@@ -1,15 +1,14 @@
 package com.tamazian.mapper;
 
 import com.tamazian.dto.CreateUserDto;
-import com.tamazian.entity.Position;
+import com.tamazian.entity.Title;
 import com.tamazian.entity.User;
 import com.tamazian.util.LocalDateFormatter;
-
-import java.time.LocalDate;
 
 public class CreateUserMapper implements Mapper<CreateUserDto, User> {
 
     private static final CreateUserMapper INSTANCE = new CreateUserMapper();
+    private static final String IMAGE_FOLDER = "\\users\\";
 
     @Override
     public User mapFrom(CreateUserDto entity) {
@@ -18,7 +17,8 @@ public class CreateUserMapper implements Mapper<CreateUserDto, User> {
                 .password(entity.getPassword())
                 .firstName(entity.getFirstName())
                 .lastName(entity.getLastName())
-                .position(Position.valueOf(entity.getPosition()))
+                .image(IMAGE_FOLDER + entity.getImage().getSubmittedFileName())
+                .title(Title.valueOf(entity.getTitle()))
                 .birthday(LocalDateFormatter.format(entity.getBirthday()))
                 .build();
     }
