@@ -1,7 +1,7 @@
 package com.tamazian.validation;
 
 import com.tamazian.dto.CreateUserDto;
-import com.tamazian.entity.Title;
+import com.tamazian.entity.enam.Title;
 import com.tamazian.util.LocalDateFormatter;
 
 public class CreateUserValidator implements Validator<CreateUserDto> {

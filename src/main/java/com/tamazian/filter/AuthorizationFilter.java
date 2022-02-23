@@ -1,7 +1,6 @@
 package com.tamazian.filter;
 
 import com.tamazian.dto.UserDto;
-import com.tamazian.entity.Title;
 import jakarta.servlet.*;
 import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;

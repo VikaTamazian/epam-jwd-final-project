@@ -1,9 +1,11 @@
 package com.tamazian.service;
 
-import com.tamazian.dao.UserDao;
+import com.tamazian.dao.impl.UserDaoImpl;
 import com.tamazian.dto.CreateUserDto;
 import com.tamazian.dto.UserDto;
 import com.tamazian.entity.User;
+import com.tamazian.exception.DaoException;
+import com.tamazian.exception.ServiceException;
 import com.tamazian.exception.ValidationException;
 import com.tamazian.mapper.CreateUserMapper;
 import com.tamazian.mapper.UserMapper;
@@ -22,14 +24,14 @@ public class UserService {
 
     private static final UserService INSTANCE = new UserService();
 
-    private final UserDao userDao = UserDao.getInstance();
+    private final UserDaoImpl userDaoImpl = UserDaoImpl.getInstance();
     private final CreateUserValidator createUserValidator = CreateUserValidator.getInstance();
     private final CreateUserMapper createUserMapper = CreateUserMapper.getInstance();
     private final UserMapper userMapper = UserMapper.getInstance();
     private final ImageService imageService = ImageService.getInstance();
 
     public Optional<UserDto> login(String email, String password) {
-        return userDao.findByEmailAndPassword(email, password)
+        return userDaoImpl.findByEmailAndPassword(email, password)
                 .map(userMapper::mapFrom);
     }
 
@@ -42,26 +44,30 @@ public class UserService {
         User userEntity = createUserMapper.mapFrom(userDto);
         imageService.upload(userEntity.getImage(),
                 userDto.getImage().getInputStream());
-        userDao.save(userEntity);
+        userDaoImpl.save(userEntity);
 
         return String.format("User save with id %d", userEntity.getId());
     }
 
 
-    public List<UserDto> findAll() {
-        return userDao.findAll()
-                .stream()
-                .map(user -> UserDto.builder()
-                        .id(user.getId())
-                        .email(user.getEmail())
-                        .firstName(user.getFirstName())
-                        .lastName(user.getLastName())
-                        .image(user.getImage())
-                        .title(user.getTitle())
-                        .birthday(user.getBirthday())
-                        .build()
-                )
-                .collect(Collectors.toList());
+    public List<UserDto> findAll() throws ServiceException {
+        try {
+            return userDaoImpl.findAll()
+                    .stream()
+                    .map(user -> UserDto.builder()
+                            .id(user.getId())
+                            .email(user.getEmail())
+                            .firstName(user.getFirstName())
+                            .lastName(user.getLastName())
+                            .image(user.getImage())
+                            .title(user.getTitle())
+                            .birthday(user.getBirthday())
+                            .build()
+                    )
+                    .collect(Collectors.toList());
+        } catch (DaoException e) {
+            throw new ServiceException("Impossible to show the list of users", e);
+        }
     }
 
     public static UserService getInstance() {

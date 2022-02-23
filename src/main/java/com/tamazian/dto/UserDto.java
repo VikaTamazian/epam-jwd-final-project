@@ -1,6 +1,6 @@
 package com.tamazian.dto;
 
-import com.tamazian.entity.Title;
+import com.tamazian.entity.enam.Title;
 import lombok.Builder;
 import lombok.Value;
 

@@ -1,17 +1,15 @@
 package com.tamazian.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Flight {
+public class Flight extends Entity {
     private Integer id;
     private String name;
     private LocalDateTime date;

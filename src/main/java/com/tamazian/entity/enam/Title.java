@@ -1,4 +1,4 @@
-package com.tamazian.entity;
+package com.tamazian.entity.enam;
 
 import java.util.Arrays;
 import java.util.Optional;

@@ -1,7 +1,7 @@
 package com.tamazian.mapper;
 
 import com.tamazian.dto.CreateUserDto;
-import com.tamazian.entity.Title;
+import com.tamazian.entity.enam.Title;
 import com.tamazian.entity.User;
 import com.tamazian.util.LocalDateFormatter;
 

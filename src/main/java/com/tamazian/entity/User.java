@@ -1,17 +1,16 @@
 package com.tamazian.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.tamazian.entity.enam.Title;
+import lombok.*;
 
 import java.time.LocalDate;
 
 @Data
+@EqualsAndHashCode(callSuper = false)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class User extends Entity {
     private Integer id;
     private String email;
     private String password;

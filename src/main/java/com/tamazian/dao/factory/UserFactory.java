@@ -1,6 +1,6 @@
 package com.tamazian.dao.factory;
 
-import com.tamazian.entity.Title;
+import com.tamazian.entity.enam.Title;
 import com.tamazian.entity.User;
 import com.tamazian.exception.DaoException;
 

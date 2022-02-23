@@ -1,7 +1,7 @@
 package com.tamazian.servlet;
 
 import com.tamazian.dto.CreateUserDto;
-import com.tamazian.entity.Title;
+import com.tamazian.entity.enam.Title;
 import com.tamazian.exception.ValidationException;
 import com.tamazian.service.UserService;
 import com.tamazian.util.JspHelper;
