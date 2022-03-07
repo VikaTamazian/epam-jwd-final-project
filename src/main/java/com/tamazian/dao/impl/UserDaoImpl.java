@@ -22,8 +22,8 @@ public class UserDaoImpl implements UserDao {
             FROM users ORDER BY lastName
             """;
     private static final String SAVE_SQL = """
-            INSERT INTO users (email, password, firstName, lastName, image,  title, birthday, registration_key)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?);
+            INSERT INTO users (email, password, firstName, lastName, image,  title, birthday)
+            VALUES (?, ?, ?, ?, ?, ?, ?);
             """;
     public static final String GET_BY_EMAIL_AND_PASSWORD_SQL = """
             SELECT id, email, password, firstName, lastName, image, title, birthday FROM users
@@ -32,16 +32,23 @@ public class UserDaoImpl implements UserDao {
     private static final String CHANGE_USER_PASSWORD = """
             UPDATE users SET password = ? WHERE email = ?
             """;
-    private static final String FIND_USER_BY_ID_SQL = FIND_ALL_SQL + " WHERE u.id = ?";
+    private static final String FIND_USER_BY_ID_SQL = FIND_ALL_SQL + """ 
+            WHERE u.id = ?""";
     private static final String DELETE_SQL = """
             DELETE FROM users
             WHERE id = ?
             """;
-    private static final String UPDATE_SQL = "UPDATE users SET email=?, firstName=?, lastName=?, image=?, title=?, birthday=? WHERE id= ?";
-
-    private static final String FIND_USER_BY_EMAIL_SQL = FIND_ALL_SQL + " WHERE u.email = ?";
-    private static final String CHANGE_USER_TITLE_SQL = "UPDATE users SET title_id = ? WHERE id = ?";
-    private static final String CHANGE_USER_IMAGE_SQL = "UPDATE users SET image = ? WHERE email = ?";
+    private static final String UPDATE_SQL = """
+            UPDATE users SET email=?, firstName=?, lastName=?, image=?, title=?, birthday=? WHERE id= ?
+            """;
+    private static final String FIND_USER_BY_EMAIL_SQL = FIND_ALL_SQL + """ 
+            WHERE u.email = ?""";
+    private static final String CHANGE_USER_TITLE_SQL = """
+            UPDATE users SET title_id = ? WHERE id = ?
+            """;
+    private static final String CHANGE_USER_IMAGE_SQL = """
+            UPDATE users SET image = ? WHERE email = ?
+            """;
 
 
     private UserDaoImpl() {
@@ -50,7 +57,6 @@ public class UserDaoImpl implements UserDao {
     public static UserDaoImpl getInstance() {
         return INSTANCE;
     }
-
 
     @Override
     public List<User> findAll() throws DaoException {
@@ -94,7 +100,7 @@ public class UserDaoImpl implements UserDao {
         try (Connection connection = ConnectionManager.get();
              PreparedStatement preparedStatement = connection.prepareStatement(GET_BY_EMAIL_AND_PASSWORD_SQL)) {
             preparedStatement.setString(1, email);
-            preparedStatement.setString(2, password);
+            preparedStatement.setString(2, PasswordHashGenerator.encodePassword(password));
 
             ResultSet resultSet = preparedStatement.executeQuery();
             if (resultSet.next()) {
@@ -142,7 +148,7 @@ public class UserDaoImpl implements UserDao {
         try (Connection connection = ConnectionManager.get();
              PreparedStatement preparedStatement = connection.prepareStatement(SAVE_SQL, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setObject(1, entity.getEmail());
-            preparedStatement.setObject(2, entity.getPassword());
+            preparedStatement.setObject(2, PasswordHashGenerator.encodePassword(entity.getPassword()));
             preparedStatement.setObject(3, entity.getFirstName());
             preparedStatement.setObject(4, entity.getLastName());
             preparedStatement.setObject(5, entity.getImage());

@@ -9,6 +9,7 @@ import com.tamazian.exception.ServiceException;
 import com.tamazian.exception.ValidationException;
 import com.tamazian.mapper.CreateUserMapper;
 import com.tamazian.mapper.UserMapper;
+import com.tamazian.util.AccountConfirmation;
 import com.tamazian.validation.CreateUserValidator;
 import com.tamazian.validation.ValidationResult;
 import lombok.AccessLevel;
@@ -29,6 +30,7 @@ public class UserService {
     private final CreateUserMapper createUserMapper = CreateUserMapper.getInstance();
     private final UserMapper userMapper = UserMapper.getInstance();
     private final ImageService imageService = ImageService.getInstance();
+    private final AccountConfirmation accountConfirmation = AccountConfirmation.getInstance();
 
     public Optional<UserDto> login(String email, String password) {
         return userDaoImpl.findByEmailAndPassword(email, password)
@@ -68,6 +70,10 @@ public class UserService {
         } catch (DaoException e) {
             throw new ServiceException("Impossible to show the list of users", e);
         }
+    }
+
+    public String confirmCreatedAccount(String emailTo) {
+        return accountConfirmation.isAccountConfirmationSuccessful(emailTo);
     }
 
     public static UserService getInstance() {

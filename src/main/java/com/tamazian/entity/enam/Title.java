@@ -1,8 +1,13 @@
 package com.tamazian.entity.enam;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import java.util.Arrays;
 import java.util.Optional;
 
+@Getter
+@AllArgsConstructor
 public enum Title {
     ADMIN(1),
     TRAFFIC_CONTROLLER(2),
@@ -12,14 +17,6 @@ public enum Title {
     STEWARD(6);
 
     private final int id;
-
-    Title(int id) {
-        this.id = id;
-    }
-
-    public int getId() {
-        return id;
-    }
 
     public static Optional<Title> find(String title) {
         return Arrays.stream(values())
