@@ -1,29 +1,31 @@
 package com.tamazian.util;
 
+import lombok.SneakyThrows;
+import lombok.experimental.UtilityClass;
+
 import java.lang.reflect.Proxy;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
-public final class ConnectionManager {
+@UtilityClass
+public class ConnectionManager {
     private static final String PASSWORD_KEY = "db.password";
     private static final String USERNAME_KEY = "db.username";
     private static final String URL_KEY = "db.url";
     private static final String POOL_SIZE_KEY = "db.pool.size";
+    private static final String DRIVER_CLASS_NAME = "db.driverClassName";
     public static final Integer DEFAULT_POOL_SIZE = 10;
     private static BlockingQueue<Connection> pool;
     private static List<Connection> sourceConnections;
 
 
-    private ConnectionManager() {
-
-    }
-
     static {
+        loadDriver();
         initConnectionPool();
     }
 
@@ -45,34 +47,34 @@ public final class ConnectionManager {
         }
     }
 
+    @SneakyThrows
     public static void closePool() {
-        try {
-            for (Connection sourceConnection : sourceConnections) {
-                sourceConnection.close();
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        for (Connection sourceConnection : sourceConnections) {
+            sourceConnection.close();
         }
     }
 
+    @SneakyThrows
     public static Connection get() {
-        try {
-            return pool.take();
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
+        return pool.take();
+
     }
 
+    @SneakyThrows
     private static Connection open() {
-        try {
-            return DriverManager.getConnection(
-                    PropertiesUtil.get(URL_KEY),
-                    PropertiesUtil.get(USERNAME_KEY),
-                    PropertiesUtil.get(PASSWORD_KEY)
-            );
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return DriverManager.getConnection(
+                PropertiesUtil.get(URL_KEY),
+                PropertiesUtil.get(USERNAME_KEY),
+                PropertiesUtil.get(PASSWORD_KEY)
+        );
+
+    }
+
+    @SneakyThrows
+    private static void loadDriver() {
+        Class.forName(PropertiesUtil.get(DRIVER_CLASS_NAME));
+        //  Class.forName("java.sql.Driver");
+
     }
 
 }
